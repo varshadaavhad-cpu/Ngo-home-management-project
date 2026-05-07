@@ -1,0 +1,26 @@
+<h1>Admin Dashboard</h1>
+
+<a href="/add_banner">Add Banner</a>
+<br><br>
+
+<a href="/add_initiative">Add Initiative</a>
+<br><br>
+
+<a href="/logout">Logout</a>
+
+<hr>
+
+<h2>Banners</h2>
+
+{% for banner in banners %}
+<p>{{ banner[1] }}</p>
+{% endfor %}
+
+<hr>
+
+<h2>Initiatives</h2>
+
+{% for item in initiatives %}
+<h3>{{ item[1] }}</h3>
+<p>{{ item[2] }}</p>
+{% endfor %}
