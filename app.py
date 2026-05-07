@@ -1,0 +1,151 @@
+from flask import Flask, render_template, request, redirect, session
+import sqlite3
+
+app = Flask(__name__)
+app.secret_key = "secret"
+
+# DATABASE
+def init_db():
+    conn = sqlite3.connect('ngo.db')
+    c = conn.cursor()
+
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS admin(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        password TEXT
+    )
+    ''')
+
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS banners(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT
+    )
+    ''')
+
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS initiatives(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        description TEXT
+    )
+    ''')
+
+    # default admin
+    c.execute("SELECT * FROM admin")
+    if not c.fetchone():
+        c.execute("INSERT INTO admin(username,password) VALUES(?,?)",
+                  ("admin", "admin123"))
+
+    conn.commit()
+    conn.close()
+
+init_db()
+
+# HOME PAGE
+@app.route('/')
+def home():
+    conn = sqlite3.connect('ngo.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM banners")
+    banners = c.fetchall()
+
+    c.execute("SELECT * FROM initiatives")
+    initiatives = c.fetchall()
+
+    conn.close()
+
+    return render_template('home.html',
+                           banners=banners,
+                           initiatives=initiatives)
+
+# LOGIN
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = sqlite3.connect('ngo.db')
+        c = conn.cursor()
+
+        c.execute("SELECT * FROM admin WHERE username=? AND password=?",
+                  (username, password))
+
+        user = c.fetchone()
+        conn.close()
+
+        if user:
+            session['admin'] = username
+            return redirect('/dashboard')
+
+    return render_template('login.html')
+
+# DASHBOARD
+@app.route('/dashboard')
+def dashboard():
+    if 'admin' not in session:
+        return redirect('/login')
+
+    conn = sqlite3.connect('ngo.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM banners")
+    banners = c.fetchall()
+
+    c.execute("SELECT * FROM initiatives")
+    initiatives = c.fetchall()
+
+    conn.close()
+
+    return render_template('dashboard.html',
+                           banners=banners,
+                           initiatives=initiatives)
+
+# ADD BANNER
+@app.route('/add_banner', methods=['GET', 'POST'])
+def add_banner():
+    if request.method == 'POST':
+        title = request.form['title']
+
+        conn = sqlite3.connect('ngo.db')
+        c = conn.cursor()
+
+        c.execute("INSERT INTO banners(title) VALUES(?)", (title,))
+        conn.commit()
+        conn.close()
+
+        return redirect('/dashboard')
+
+    return render_template('add_banner.html')
+
+# ADD INITIATIVE
+@app.route('/add_initiative', methods=['GET', 'POST'])
+def add_initiative():
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+
+        conn = sqlite3.connect('ngo.db')
+        c = conn.cursor()
+
+        c.execute("INSERT INTO initiatives(title,description) VALUES(?,?)",
+                  (title, description))
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/dashboard')
+
+    return render_template('add_initiative.html')
+
+# LOGOUT
+@app.route('/logout')
+def logout():
+    session.pop('admin', None)
+    return redirect('/login')
+
+if __name__ == '__main__':
+    app.run(debug=True)
