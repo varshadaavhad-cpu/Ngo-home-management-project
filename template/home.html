@@ -1,0 +1,20 @@
+<h1>NGO Home Page</h1>
+
+<h2>Banners</h2>
+
+{% for banner in banners %}
+<p>{{ banner[1] }}</p>
+{% endfor %}
+
+<hr>
+
+<h2>Initiatives</h2>
+
+{% for item in initiatives %}
+<h3>{{ item[1] }}</h3>
+<p>{{ item[2] }}</p>
+{% endfor %}
+
+<br><br>
+
+<a href="/login">Admin Login</a>
