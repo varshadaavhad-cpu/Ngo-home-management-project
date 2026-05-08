@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
 
-app = Flask(__name__)
+app = Flask(__name__,
+template_folder='template')
 app.secret_key = "secret"
 
 # DATABASE
