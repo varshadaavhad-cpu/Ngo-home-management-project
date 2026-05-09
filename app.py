@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from flask import Flask, render_template, request, redirect 
+from flask import Flask, render_template, request, redirect, session
 
 app = Flask(__name__,
 template_folder='template')
@@ -163,8 +163,6 @@ def logout():
     session.pop('admin', None)
     return redirect('/login')
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
 @app.route('/')
 def route():
@@ -188,10 +186,11 @@ def projects():
     conn.close()
 
     return render_template('projects.html', projects=data)
-    @app.route('/admin_projects')
+@app.route('/admin_projects')
 def admin_projects():
     return render_template('admin_projects.html')
-    @app.route('/add_project', methods=['POST'])
+@app.route('/add_project', 
+methods=['POST'])
 def add_project():
 
     title = request.form['title']
@@ -211,6 +210,9 @@ def add_project():
         "INSERT INTO projects (title, description, status, image) VALUES (?, ?, ?, ?)",
         (title, description, status, filename)
     )
+   if __name__ == '__main__':
+    app.run(debug=True)
+ 
 
     conn.commit()
     conn.close()
