@@ -213,8 +213,7 @@ def add_project():
         "INSERT INTO projects (title, description, status, image) VALUES (?, ?, ?, ?)",
         (title, description, status, filename)
     )
-   if __name__ == '__main__':
-    app.run(debug=True)
+   
  
 
     conn.commit()
@@ -222,3 +221,5 @@ def add_project():
 
     return redirect('/projects')
     
+if __name__ == '__main__':
+    app.run(debug=True)
