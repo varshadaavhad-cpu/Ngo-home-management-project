@@ -1,10 +1,25 @@
-from flask import Flask, render_template, request, redirect, session
 import sqlite3
+import os
+from flask import Flask, render_template, request, redirect 
 
 app = Flask(__name__,
 template_folder='template')
 app.secret_key = "secret"
+conn = sqlite3.connect('database.db')
+cursor = conn.cursor()
 
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS projects (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    description TEXT,
+    status TEXT,
+    image TEXT
+)
+''')
+
+conn.commit()
+conn.close()
 # DATABASE
 def init_db():
     conn = sqlite3.connect('ngo.db')
@@ -162,3 +177,43 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+@app.route('/projects')
+def projects():
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM projects")
+    data = cursor.fetchall()
+    conn.close()
+
+    return render_template('projects.html', projects=data)
+    @app.route('/admin_projects')
+def admin_projects():
+    return render_template('admin_projects.html')
+    @app.route('/add_project', methods=['POST'])
+def add_project():
+
+    title = request.form['title']
+    description = request.form['description']
+    status = request.form['status']
+
+    image = request.files['image']
+
+    filename = image.filename
+
+    image.save(os.path.join('static/uploads', filename))
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO projects (title, description, status, image) VALUES (?, ?, ?, ?)",
+        (title, description, status, filename)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect('/projects')
+    
