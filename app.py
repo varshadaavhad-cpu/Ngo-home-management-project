@@ -186,9 +186,12 @@ def projects():
     conn.close()
 
     return render_template('projects.html', projects=data)
+
 @app.route('/admin_projects')
 def admin_projects():
     return render_template('admin_projects.html')
+
+
 @app.route('/add_project', 
 methods=['POST'])
 def add_project():
