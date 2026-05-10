@@ -1,3 +1,4 @@
+from flask_sqlalchemy import SQLAlchemy
 # Media models sathi ha code vapara
 class PressRelease(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -9,6 +10,7 @@ class ImageGallery(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     img_url = db.Column(db.String(500), nullable=False)
     caption = db.Column(db.String(200))
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'  
 import sqlite3
 import os
 from flask import Flask, render_template, request, redirect, session
