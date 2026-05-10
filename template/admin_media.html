@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Manage Media</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .form-section { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+        input, textarea { width: 100%; margin: 10px 0; padding: 8px; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Manage Media Content</h1>
+
+    <div class="form-section">
+        <h3>Add Press Release</h3>
+        <form method="POST">
+            <input type="text" name="title" placeholder="News Title" required>
+            <textarea name="desc" placeholder="Brief Description" rows="3" required></textarea>
+            <input type="date" name="date" required>
+            <button type="submit">Save Press Release</button>
+        </form>
+    </div>
+
+    <div class="form-section">
+        <h3>Add Photo to Gallery</h3>
+        <form method="POST">
+            <input type="text" name="img_url" placeholder="Paste Image URL here (e.g. https://...)" required>
+            <input type="text" name="caption" placeholder="Photo Caption">
+            <button type="submit">Upload Photo</button>
+        </form>
+    </div>
+</body>
+</html>
