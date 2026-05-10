@@ -1,3 +1,14 @@
+# Media models sathi ha code vapara
+class PressRelease(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    date = db.Column(db.String(50), nullable=False)
+
+class ImageGallery(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    img_url = db.Column(db.String(500), nullable=False)
+    caption = db.Column(db.String(200))
 import sqlite3
 import os
 from flask import Flask, render_template, request, redirect, session
@@ -156,6 +167,37 @@ def add_initiative():
         return redirect('/dashboard')
 
     return render_template('add_initiative.html')
+from flask import render_template, request, redirect, url_for
+
+@app.route('/media')
+def media_page():
+    press = PressRelease.query.all()
+    images = ImageGallery.query.all()
+    return render_template('media.html', press=press, images=images)
+
+@app.route('/admin/add-media', methods=['GET', 'POST'])
+def add_media():
+    if request.method == 'POST':
+        # Press Release logic
+        if 'title' in request.form:
+            new_press = PressRelease(
+                title=request.form['title'],
+                description=request.form['desc'],
+                date=request.form['date']
+            )
+            db.session.add(new_press)
+        
+        # Image Gallery logic
+        if 'img_url' in request.form:
+            new_img = ImageGallery(
+                img_url=request.form['img_url'],
+                caption=request.form['caption']
+            )
+            db.session.add(new_img)
+            
+        db.session.commit()
+        return redirect(url_for('media_page'))
+    return render_template('admin_media.html')
 
 # LOGOUT
 @app.route('/logout')
