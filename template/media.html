@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NGO - Media Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+        .grid { display: flex; flex-wrap: wrap; gap: 20px; }
+        .card { border: 1px solid #eee; padding: 10px; width: 250px; border-radius: 10px; }
+        .card img { width: 100%; border-radius: 5px; }
+        .press-item { border-bottom: 1px solid #ccc; padding: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Media & News</h1>
+
+    <section>
+        <h2>Latest Press Releases</h2>
+        {% for item in press %}
+        <div class="press-item">
+            <h3>{{ item.title }}</h3>
+            <p><small>{{ item.date }}</small></p>
+            <p>{{ item.description }}</p>
+        </div>
+        {% endfor %}
+    </section>
+
+    <section>
+        <h2>Photo Gallery</h2>
+        <div class="grid">
+            {% for img in images %}
+            <div class="card">
+                <img src="{{ img.img_url }}" alt="NGO Gallery Photo">
+                <p>{{ img.caption }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</body>
+</html>
